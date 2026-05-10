@@ -1,10 +1,13 @@
-import { useState, useMemo, useEffect, FormEvent } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import type { FormEvent } from 'react';
 import { Plus, Send, LogOut, AlertTriangle, Trash2, AlertCircle, Info, ShieldCheck, Clock, CheckCircle, Lock, User, RefreshCw } from 'lucide-react';
 
 // --- FIREBASE IMPORTS ---
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
-import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, DocumentData } from "firebase/firestore";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import type { User as FirebaseUser } from "firebase/auth";
+import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import type { DocumentData } from "firebase/firestore";
 
 // --- TIPOS (TYPESCRIPT) ---
 interface Despesa {
@@ -92,7 +95,6 @@ export default function App() {
   const [categoria, setCategoria] = useState(CATEGORIAS[0].nome);
   const [descricao, setDescricao] = useState('');
   const [valorInput, setValorInput] = useState('');
-  const [erroValidacao, setErroValidacao] = useState('');
   const [showModalADM, setShowModalADM] = useState<Lote | null>(null);
   const [modalAprovacaoData, setModalAprovacaoData] = useState<LoteRascunho | null>(null);
   const [loteParaDeletar, setLoteParaDeletar] = useState<Lote | null>(null);
@@ -166,10 +168,8 @@ export default function App() {
 
   const handleAdicionarRascunho = (e: FormEvent) => {
     e.preventDefault();
-    setErroValidacao(''); 
     const valorUS = parseValorBR(valorInput);
     if (valorUS <= 0 || !descricao.trim()) {
-      setErroValidacao("Insira uma descrição válida e um valor maior que zero.");
       return;
     }
     const novaDespesa: Despesa = {
